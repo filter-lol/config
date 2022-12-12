@@ -1,0 +1,182 @@
+{
+    "log": {
+        "loglevel": "error"
+    },
+    "dns": {
+        "servers": [
+            "https://free.shecan.ir/dns-query"
+        ]
+    },
+    "routing": {
+        "domainStrategy": "AsIs",
+        "strategy": "rules",
+        "settings": {
+            "rules": [
+                {
+                    "type": "field",
+                    "domain": [
+                        "regexp:.*\\.ir$"
+                    ],
+                    "outboundTag": "direct"
+                },
+                {
+                    "type": "field",
+                    "ip": [
+                        "geoip:private",
+                        "geoip:ir"
+                    ],
+                    "outboundTag": "direct"
+                },
+                {
+                    "outboundTag": "blocked",
+                    "protocol": [
+                        "bittorrent"
+                    ],
+                    "type": "field"
+                }
+            ]
+        }
+    },
+    "outbounds": [
+        {
+            "tag": "vmess-out",
+            "protocol": "vmess",
+            "settings": {
+                "vnext": [
+                    {
+                        "address": "1.1.1.1",
+                        "port": 443,
+                        "users": [
+                            {
+                                "id": "11490262-04c5-4ad0-beee-d12419e01e69",
+                                "alterId": 0,
+                                "security": "auto"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "streamSettings": {
+                "network": "ws",
+                "security": "",
+                "wsSettings": {
+                    "path": "/",
+                    "headers": {
+                        "Host": ""
+                    }
+                }
+            },
+            "mux": {
+                "enabled": true
+            }
+        },
+        {
+            "tag": "vless-out",
+            "protocol": "vless",
+            "settings": {
+                "vnext": [
+                    {
+                        "decryption": "none",
+                        "address": "1.1.1.1",
+                        "port": 80,
+                        "users": [
+                            {
+                                "id": "11490262-04c5-4ad0-beee-d12419e01e69"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "streamSettings": {
+                "network": "ws",
+                "security": "",
+                "wsSettings": {
+                    "path": "/",
+                    "headers": {
+                        "Host": ""
+                    }
+                }
+            },
+            "mux": {
+                "enabled": true
+            }
+        },
+        {
+            "protocol": "freedom",
+            "settings": {}
+        },
+        {
+            "protocol": "blackhole",
+            "settings": {},
+            "tag": "blocked"
+        }
+    ],
+    "inbounds": [
+        {
+            "port": 443,
+            "protocol": "vmess",
+            "settings": {
+                "clients": [
+                    {
+                        "id": "7f9e0789-ddb2-4919-88ca-44fe90c37ad3",
+                        "alterId": 0,
+                        "security": "auto"
+                    }
+                ]
+            },
+            "sniffing": {
+                "enabled": true
+            },
+            "streamSettings": {
+                "network": "ws",
+                "wsSettings": {
+                    "path": "/"
+                }
+            }
+        },
+        {
+            "port": 80,
+            "protocol": "vless",
+            "settings": {
+                "clients": [
+                    {
+                        "id": "7f9e0789-ddb2-4919-88ca-44fe90c37ad3"
+                    }
+                ],
+                "decryption": "none"
+            },
+            "streamSettings": {
+                "network": "ws",
+                "wsSettings": {
+                    "path": "/"
+                }
+            }
+        },
+        {
+            "port": 8443,
+            "protocol": "socks",
+            "tag": "socks",
+            "settings": {
+                "auth": "password",
+                "accounts": [
+                    {
+                        "user": "username",
+                        "pass": "password_is_me_secure_mass_pass_kass"
+                    }
+                ],
+                "udp": true,
+                "level": 1
+            }
+        },
+        {
+            "port": 1443,
+            "tag": "shadowsocks",
+            "protocol": "shadowsocks",
+            "settings": {
+                "udp": true,
+                "method": "chacha20-ietf-poly1305",
+                "password": "password_is_me_secure_mass_pass_kass"
+            }
+        }
+    ]
+}
